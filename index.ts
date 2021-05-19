@@ -17,10 +17,10 @@ function isAnyDuplicatedReview(reviews: Array<any>, body: string): boolean {
 /** Gets the PR reviews by querying the GitHub API (GraphQL) and calls
 isAnyDuplicatedReview to know if any of them is a duplicate */
 async function existsDuplicatedReview(octokit: any, reviewState: string, pullRequest: any, body: string): Promise<boolean | undefined > {
-  const repo = pullRequest.head.repo
+  const repo = pullRequest.base.repo
   const query = `
     query {
-    repository(name: "${repo.name}", owner: "${repo.owner.login}") {
+    repository(owner: "${repo.owner.login}", name: "${repo.name}") {
       pullRequest(number: ${pullRequest.number}) {
         reviews(last: 100, states: ${reviewState}) {
           nodes {
@@ -40,6 +40,7 @@ async function existsDuplicatedReview(octokit: any, reviewState: string, pullReq
     return isAnyDuplicatedReview(reviews, body);
   }
   catch (err) {
+    core.error(`${err} ${query}`);
     core.setFailed(err.message);
   }
 }
@@ -56,7 +57,7 @@ async function sendReview(octokit: any, reviewState: string, pullRequest: any, b
       }) {clientMutationId}
     }`;
     octokit.graphql(query).catch((err: Error) => {
-      core.error(err);
+      core.error(`${err} ${query}`);
       core.setFailed(err.message);
     });
   }
