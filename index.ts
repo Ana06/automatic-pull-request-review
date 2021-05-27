@@ -17,7 +17,6 @@ function isAnyDuplicatedReview(reviews: Array<any>): boolean {
 /** Gets the PR reviews by querying the GitHub API (GraphQL) and calls
 isAnyDuplicatedReview to know if any of them is a duplicate */
 async function existsDuplicatedReview(): Promise<boolean | undefined > {
-  const repo = <any>pullRequest.base.repo;
   const query = `
     query {
     repository(owner: "${repo.owner.login}", name: "${repo.name}") {
@@ -38,6 +37,52 @@ async function existsDuplicatedReview(): Promise<boolean | undefined > {
     const { repository } = await octokit.graphql(query, {});
     const reviews = <Array<any>>repository.pullRequest.reviews.nodes;
     return isAnyDuplicatedReview(reviews);
+  }
+  catch (err) {
+    core.error(`${err} ${query}`);
+    core.setFailed(err.message);
+  }
+}
+
+/** Search for a request with owner 'github-actions' and state 'APPROVED' or
+'CHANGES_REQUESTED' and dismiss it */
+async function dismissReview(): Promise<void> {
+  var query = `
+    query {
+    repository(owner: "${repo.owner.login}", name: "${repo.name}") {
+      pullRequest(number: ${pullRequest.number}) {
+        reviews(last: 100, states: [APPROVED, CHANGES_REQUESTED]) {
+          nodes {
+            id
+            author {
+              login
+            }
+          }
+        }
+      }
+    }
+  }`;
+
+  try {
+    const { repository } = await octokit.graphql(query, {});
+    const reviews = <Array<any>>repository.pullRequest.reviews.nodes;
+    if(!reviews.length){
+	core.info("No review to dismiss found")
+	return
+    }
+    // Dismiss the last request (the last one in the list)
+    for (let review of reviews.reverse()) {
+      if(review.author.login === 'github-actions'){
+        query = `
+          mutation {
+            dismissPullRequestReview(input: {
+              message: "${body}",
+              pullRequestReviewId: "${review.id}"
+            }) {clientMutationId}
+          }`;
+        octokit.graphql(query)
+      }
+    }
   }
   catch (err) {
     core.error(`${err} ${query}`);
@@ -93,4 +138,9 @@ if (!pullRequest) {
   core.setFailed('This action is meant to be ran on pull requests');
 }
 
-sendReview();
+const repo = <any>pullRequest.base.repo;
+
+if(requestEvent === 'DISMISS')
+  dismissReview();
+else
+  sendReview();

@@ -34,9 +34,9 @@ jobs:
 
 These are the options recommended to be changed. For more detailed explanation of the workflow file, check out the [GitHub documentation](https://help.github.com/en/articles/configuring-a-workflow#creating-a-workflow-file).
 
-| Setting           | Description                                                                                | Values                                           |
-| ----------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------ |
-| `event`           | The event to perform on the pull request review.                                           | APPROVE \| COMMENT \| DISMISS \| REQUEST_CHANGES |
-| `body`            | The contents of the review body comment. Required when event is COMMENT or REQUEST_CHANGES | String                                           |
-| `allow_duplicate` | The review is sent more than once. `true` by default.                                      | `true` or `false`                                |
-| `repo-token`      | The personal access token                                                                  | `${{ secrets.GITHUB_TOKEN }}`                    |
+| Setting           | Description                                                                                  | Values                                           |
+| ----------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `event`           | The event to perform on the pull request review.                                             | APPROVE \| COMMENT \| DISMISS \| REQUEST_CHANGES |
+| `body`            | The contents of the review body comment. Required when event is COMMENT or REQUEST_CHANGES   | String                                           |
+| `allow_duplicate` | The review is sent more than once. `true` by default. It is ignored for the `DISMISS` event. | `true` or `false`                                |
+| `repo-token`      | The personal access token                                                                    | `${{ secrets.GITHUB_TOKEN }}`                    |
