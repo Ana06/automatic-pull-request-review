@@ -1,6 +1,6 @@
-name: 'Automatic pull request review'
+name: 'Automatic PR review'
 description: '👍 Github action to automate pull requests'
-author: 'Andrew Musgrave <andrewdmusgrave@gmail.com>'
+author: 'Andrew Musgrave <andrewdmusgrave@gmail.com>, Ana Maria Martinez Gomez'
 runs:
   using: 'node12'
   main: 'dist/index.js'
