@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Approve pull request
         if: github.actor == 'dependabot[bot]'
-        uses: Ana06/automatic-pull-request-review@v0.1.0
+        uses: Ana06/automatic-pull-request-review@v0.2.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           event: APPROVE
@@ -41,4 +41,13 @@ These are the options recommended to be changed. For more detailed explanation o
 | `event`           | The event to perform on the pull request review.                                               | `APPROVE` \| `COMMENT` \| `DISMISS` \| `REQUEST_CHANGES` |
 | `body`            | The content of the review body comment. Required when event is `COMMENT` or `REQUEST_CHANGES`. | String                                                   |
 | `allow_duplicate` | The review is sent more than once. `true` by default. It is ignored for the `DISMISS` event.   | `true` or `false`                                        |
-| `repo-token`      | The personal access token.                                                                      | `${{ secrets.GITHUB_TOKEN }}`                            |
+| `repo-token`      | The personal access token.                                                                     | `${{ secrets.GITHUB_TOKEN }}`                            |
+
+## Build action
+
+Creating a commit should build the action. You can also run the following commands:
+
+```bash
+yarn
+yarn build
+```
