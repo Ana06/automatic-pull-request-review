@@ -14,8 +14,9 @@
   },
   "keywords": [
     "github-actions",
-    "pulls",
-    "request"
+    "pull",
+    "request",
+    "review"
   ],
   "author": "Andrew Musgrave <andrewdmusgrave@gmail.com>",
   "license": "MIT",
@@ -23,6 +24,9 @@
     "url": "https://github.com/andrewmusgrave/automatic-pull-request-review/issues"
   },
   "homepage": "https://github.com/andrewmusgrave/automatic-pull-request-review#readme",
+  "engines": {
+    "node": "^20"
+  },
   "dependencies": {
     "@actions/core": "^1.2.7",
     "@actions/github": "^4.0.0",
